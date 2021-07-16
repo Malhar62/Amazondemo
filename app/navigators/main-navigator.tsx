@@ -7,7 +7,7 @@
 import React from "react"
 import { createDrawerNavigator } from "@react-navigation/drawer"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { FormScreen, ThirdScreen, SecondScreen, FirstScreen, HistoryScreen, HomeScreen, ItemScreen, ItemDetailScreen, CartScreen, FavouriteScreen, WelcomeScreen } from "../screens"
+import { FormScreen, ThirdScreen, SecondScreen, FirstScreen, HistoryScreen, HomeScreen, ItemScreen, ItemDetailScreen, CartScreen, FavouriteScreen, WelcomeScreen, OfferScreen, OfferDetailScreen } from "../screens"
 import { FlatList, View, Text, TouchableOpacity, Dimensions, Image } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../models"
@@ -47,6 +47,8 @@ export type PrimaryParamList = {
   itemdetail: undefined
   cart: undefined
   favourite: undefined
+  offer: undefined
+  offerdetail: undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/Drawer-navigator/
@@ -58,10 +60,10 @@ export function MainNavigator() {
   let DATA = [
     { name: 'HOME', path: 'home' },
     { name: 'SHOP BY CATEGORY', path: 'welcome' },
-    { name: 'TOP OFFERS', path: '' },
+    { name: 'TOP OFFERS', path: 'offer' },
     { name: 'YOUR CART', path: 'cart' },
     { name: 'YOUR ORDERS', path: '' },
-    { name: 'MY FAVOURITES', path: 'favourite' }
+    { name: 'MY FAVOURITES', path: 'favourite' },
   ]
   function ShoppingDrawer() {
     return (
@@ -97,6 +99,8 @@ export function MainNavigator() {
       <Drawer.Screen name='cart' component={CartScreen} />
       <Drawer.Screen name='welcome' component={WelcomeScreen} />
       <Drawer.Screen name='favourite' component={FavouriteScreen} />
+      <Drawer.Screen name='offer' component={OfferScreen} />
+      <Drawer.Screen name='offerdetail' component={OfferDetailScreen} />
     </Drawer.Navigator>
     ///  below is BOXING app navigator
     /*<Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>

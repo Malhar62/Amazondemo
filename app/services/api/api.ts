@@ -204,4 +204,28 @@ export class Api {
       return { kind: "bad-data" }
     }
   }
+  async getOffer(): Promise<Types.GetShoppingData> {
+    const response: ApiResponse<any> = await this.apisauce.get(`/carts`)
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    try {
+      return { kind: "ok", list: response.data, status: response.status }//returns this
+    } catch {
+      return { kind: "bad-data" }
+    }
+  }
+  async getOfferById(id: number): Promise<Types.GetShoppingData> {
+    const response: ApiResponse<any> = await this.apisauce.get(`/carts/${id}`)
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    try {
+      return { kind: "ok", list: response.data, status: response.status }//returns this
+    } catch {
+      return { kind: "bad-data" }
+    }
+  }
 }
