@@ -8,8 +8,11 @@ import { spacing } from "../../theme"
 import { translate } from "../../i18n/"
 import { useStores } from "../../models"
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { useNavigation } from "@react-navigation/native"
+
 // static styles
 const ROOT: ViewStyle = {
+  width: '100%',
   flexDirection: "row",
   paddingHorizontal: spacing[4],
   alignItems: "center",
@@ -17,7 +20,6 @@ const ROOT: ViewStyle = {
   paddingBottom: spacing[5],
   justifyContent: "space-between",
   borderBottomWidth: 1,
-  borderBottomColor: 'grey',
   height: 60,
   backgroundColor: 'black'
 }
@@ -44,26 +46,34 @@ export function Header(props: HeaderProps) {
   } = props
   const header = headerText || (headerTx && translate(headerTx)) || ""
   const { cartStore } = useStores()
+  const navigation = useNavigation()
   return (
-    <View style={[ROOT, style]}>
-      {leftIcon && (
-        <View style={{ left: 0 }}>
-          <Button preset="link" onPress={onLeftPress}>
-            <Icon icon={leftIcon} style={{ width: 25, height: 25 }} />
-          </Button>
-        </View>
-      )}
-      <View style={TITLE_MIDDLE}>
-        {flag == true && <Image source={{ uri: URL }} style={{ width: 130, height: 35, alignSelf: 'center' }} />}
-      </View>
-      {rightIcon && (
-        <View style={{ right: 10, height: 40, flexDirection: 'row' }}>
-          <Ionicons name='cart-outline' size={50} color='#fff' style={{ position: 'absolute' }} onPress={onRightPress} />
-          <View style={{ width: 20, height: 25, backgroundColor: 'black', marginLeft: 18 }}>
-            <Text style={{ fontSize: 23, fontWeight: 'bold', color: 'gold', alignSelf: 'center' }}>{cartStore.carts.length}</Text>
+    <View style={{ width: '100%', justifyContent: 'space-between' }}>
+      <View style={[ROOT, style]}>
+        {leftIcon && (
+          <View style={{ left: 0 }}>
+            <Button preset="link" onPress={onLeftPress}>
+              <Icon icon={leftIcon} style={{ width: 25, height: 25 }} />
+            </Button>
           </View>
+        )}
+        <View style={TITLE_MIDDLE}>
+          {flag == true && <Image source={{ uri: URL }} style={{ width: 100, height: 35, alignSelf: 'center' }} />}
         </View>
-      )}
+        {rightIcon && (
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ justifyContent: 'center' }}>
+              <Ionicons name='search' size={25} color='#fff' onPress={() => navigation.navigate('search')} />
+            </View>
+            <View style={{ right: 0, height: 40, flexDirection: 'row' }}>
+              <Ionicons name='cart-outline' size={40} color='#fff' style={{ position: 'absolute' }} onPress={onRightPress} />
+              <View style={{ width: 20, height: 25, backgroundColor: 'black', marginLeft: 18 }}>
+                <Text style={{ fontSize: 23, fontWeight: 'bold', color: 'gold', alignSelf: 'center' }}>{cartStore.carts.length}</Text>
+              </View>
+            </View>
+          </View>
+        )}
+      </View>
     </View>
   )
 }

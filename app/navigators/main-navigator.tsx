@@ -7,9 +7,9 @@
 import React from "react"
 import { createDrawerNavigator } from "@react-navigation/drawer"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { FormScreen, ThirdScreen, SecondScreen, FirstScreen, HistoryScreen, HomeScreen, ItemScreen, ItemDetailScreen, CartScreen, FavouriteScreen, WelcomeScreen, OfferScreen, OfferDetailScreen } from "../screens"
-import { FlatList, View, Text, TouchableOpacity, Dimensions, Image } from "react-native"
-import { useNavigation } from "@react-navigation/native"
+import { FormScreen, ThirdScreen, SecondScreen, FirstScreen, HistoryScreen, HomeScreen, ItemScreen, ItemDetailScreen, CartScreen, FavouriteScreen, WelcomeScreen, OfferScreen, OfferDetailScreen, OrderScreen, AddressScreen, ConfirmScreen, SearchScreen, UserInfoScreen, VisitedScreen } from "../screens"
+import { FlatList, View, Text, TouchableOpacity, Dimensions, Image, Switch } from "react-native"
+import { DrawerActions, useNavigation } from "@react-navigation/native"
 import { useStores } from "../models"
 import { useEffect } from "react"
 import { createStackNavigator } from "@react-navigation/stack"
@@ -49,6 +49,12 @@ export type PrimaryParamList = {
   favourite: undefined
   offer: undefined
   offerdetail: undefined
+  order: undefined
+  address: undefined
+  search: undefined
+  confirm: undefined
+  userinfo: undefined
+  visit: undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/Drawer-navigator/
@@ -57,17 +63,24 @@ const Tab = createBottomTabNavigator<PrimaryParamList>()
 const Stack = createStackNavigator<PrimaryParamList>()
 export function MainNavigator() {
   const navigation = useNavigation()
+  const { cartStore, shoppingStore } = useStores()
   let DATA = [
     { name: 'HOME', path: 'home' },
     { name: 'SHOP BY CATEGORY', path: 'welcome' },
     { name: 'TOP OFFERS', path: 'offer' },
     { name: 'YOUR CART', path: 'cart' },
-    { name: 'YOUR ORDERS', path: '' },
+    { name: 'YOUR ORDERS', path: 'order' },
     { name: 'MY FAVOURITES', path: 'favourite' },
   ]
   function ShoppingDrawer() {
+    const [isEnabled, setIsEnabled] = React.useState(shoppingStore.dark);
+    const toggleSwitch = () => {
+      setIsEnabled(previousState => !previousState);
+      shoppingStore.setTheme(!isEnabled)
+      //navigation.dispatch(DrawerActions.Drawer())
+    }
     return (
-      <View>
+      <View style={{ height: '100%' }}>
         <View style={{ alignSelf: 'center' }}>
           <Image source={{ uri: 'https://purepng.com/public/uploads/large/amazon-logo-s3f.png' }} style={{ width: 180, height: 100 }} />
           <Text style={{ fontSize: 20 }}>Welcome To Amazon</Text>
@@ -75,15 +88,28 @@ export function MainNavigator() {
         <FlatList
           data={DATA}
           renderItem={({ item, index }) => (
-            <View style={{ width: 278, height: 60, justifyContent: 'center', borderBottomWidth: 1, borderBottomColor: '#f1f1f1' }}>
-              <TouchableOpacity onPress={() => navigation.navigate(item.path)}>
-                <Text style={{ fontSize: 20, alignSelf: 'center' }}>{item.name}</Text>
-              </TouchableOpacity>
+            <View style={{ width: 278, height: 60, justifyContent: 'center', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#f1f1f1' }}>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity onPress={() => navigation.navigate(item.path)}>
+                  <Text style={{ fontSize: 20, alignSelf: 'center' }}>{item.name}</Text>
+                </TouchableOpacity>
+                <View style={{ width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 15, backgroundColor: item.path == 'favourite' ? 'pink' : (item.path == 'cart' ? 'pink' : '#fff') }}>
+                  <Text style={{ fontSize: 20 }}>{item.path == 'favourite' ? cartStore.favs.length : (item.path == 'cart' ? cartStore.carts.length : '')}</Text>
+                </View>
+              </View>
             </View>
           )}
           keyExtractor={item => item.name}
         />
-
+        <View style={{ flexDirection: 'row', bottom: 10, left: 10 }}>
+          <Switch
+            trackColor={{ false: "#cae0d0", true: "#cae0d0" }}
+            thumbColor={shoppingStore.dark ? "blue" : "grey"}
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
+          <Text style={{ fontSize: 20 }}>Dark Theme</Text>
+        </View>
       </View>
     )
   }
@@ -101,6 +127,12 @@ export function MainNavigator() {
       <Drawer.Screen name='favourite' component={FavouriteScreen} />
       <Drawer.Screen name='offer' component={OfferScreen} />
       <Drawer.Screen name='offerdetail' component={OfferDetailScreen} />
+      <Drawer.Screen name='order' component={OrderScreen} />
+      <Drawer.Screen name='address' component={AddressScreen} />
+      <Drawer.Screen name='confirm' component={ConfirmScreen} />
+      <Drawer.Screen name='search' component={SearchScreen} />
+      <Drawer.Screen name='userinfo' component={UserInfoScreen} />
+      <Drawer.Screen name='visit' component={VisitedScreen} />
     </Drawer.Navigator>
     ///  below is BOXING app navigator
     /*<Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>

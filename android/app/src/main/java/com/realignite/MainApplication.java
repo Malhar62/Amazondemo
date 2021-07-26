@@ -2,6 +2,7 @@ package com.realignite;
 
 // Unimodules https://docs.expo.io/bare/installing-unimodules/#configuration-for-android
 import com.realignite.generated.BasePackageList;
+import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 
 import android.app.Application;
 import android.content.Context;

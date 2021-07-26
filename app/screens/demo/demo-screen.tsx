@@ -7,7 +7,7 @@ import { Header } from "../../components"
 
 export const DemoScreen = observer(function DemoScreen() {
   const navigation = useNavigation()
-  const route = useRoute()
+  const route = useRoute<any>()
   const { characterStore } = useStores()
   const Id = route.params.id;
   const Name = route.params.name;

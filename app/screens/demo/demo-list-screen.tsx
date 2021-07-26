@@ -8,7 +8,7 @@ import Video from 'react-native-video';
 import { Header } from "../../components"
 export const DemoListScreen = observer(function DemoListScreen() {
   const navigation = useNavigation()
-  const route = useRoute()
+  const route = useRoute<any>()
 
   const { characterStore } = useStores()
 
@@ -24,7 +24,7 @@ export const DemoListScreen = observer(function DemoListScreen() {
   React.useEffect(() => {
     console.log('third ' + Id + ' ' + Name)
     setLoad(true)
-    characterStore.getData1(Id, ind)
+    characterStore.getData1(Id)
     setLoad(false)
 
   }, [ind, navigation]);
@@ -57,7 +57,7 @@ export const DemoListScreen = observer(function DemoListScreen() {
       </View>
       <View style={{ alignSelf: 'center' }}>
         {characterStore.isLoading == false && <FlatList
-        showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
           data={characterStore.subs}
           renderItem={({ item, index }) => (
             <View style={{ alignSelf: 'center', marginTop: 30 }}>
@@ -80,7 +80,7 @@ export const DemoListScreen = observer(function DemoListScreen() {
               {item.type == 'GIF' &&
                 <View style={{ alignSelf: 'center' }}>
                   <View style={{ flexDirection: 'row' }}>
-                    {item.icon!='' && <Image source={{ uri: item.icon }} style={{ width: 60, height: 60, borderRadius: 30 }} />}
+                    {item.icon != '' && <Image source={{ uri: item.icon }} style={{ width: 60, height: 60, borderRadius: 30 }} />}
                     <Text style={{ color: '#fff', fontSize: 20 }}>{item.name}</Text>
                   </View>
                 </View>

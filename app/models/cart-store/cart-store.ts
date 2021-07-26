@@ -1,4 +1,4 @@
-import { Instance, SnapshotOut, types } from "mobx-state-tree"
+import { getSnapshot, Instance, SnapshotOut, types } from "mobx-state-tree"
 import { Alert } from "react-native";
 
 /**
@@ -20,6 +20,10 @@ export const CartStoreModel = types
     carts: types.optional(types.array(CartData), []),
     amount: types.optional(types.number, 0),
     favs: types.optional(types.array(types.frozen()), []),
+    orders: types.optional(types.array(types.frozen()), []),
+    location_latitude: types.optional(types.number, 0),
+    location_longitude: types.optional(types.number, 0),
+    visited: types.optional(types.array(types.frozen()), []),
   })
   .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
@@ -34,6 +38,20 @@ export const CartStoreModel = types
     }
   }))
   .actions((self) => ({
+    addVisited(data) {
+      var count = 0;
+      for (var i = 0; i < self.visited.length; i++) {
+        if (data.title != self.visited[i].title) {
+          count++;
+        }
+      }
+      if (count == self.visited.length) {
+        self.visited.push(data)
+        //Alert.alert('Added to Favourites !')
+        console.log(self.visited)
+      }
+    },
+
     addToFav(data) {
       var count = 0;
       for (var i = 0; i < self.favs.length; i++) {
@@ -115,6 +133,35 @@ export const CartStoreModel = types
     },
     emptyCart() {
       self.favs = []
+    },
+    saveForLater(data) {
+
+      var count = 0;
+      for (var i = 0; i < self.favs.length; i++) {
+        if (data.title != self.favs[i].title) {
+          count++;
+        }
+      }
+      if (count == self.favs.length) {
+        let array = [...self.favs]
+        array.push({ ...data })
+        self.favs = [...array];
+      }
+      var Index = self.carts.findIndex(x => x.title === data.title);
+      let furray = [...self.carts]
+      furray.splice(Index, 1)
+      //self.carts.splice(Index, 1)
+      self.carts = [...furray]
+      self.countAmount()
+    },
+    placeOrder() {
+      self.orders = getSnapshot(self.carts)
+      self.carts = []
+    },
+    setLocation(lat, long) {
+      self.location_latitude = lat;
+      self.location_longitude = long;
+      console.log('location selected')
     }
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 

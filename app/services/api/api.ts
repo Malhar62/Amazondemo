@@ -110,6 +110,7 @@ export class Api {
   }
   async putList(obj: any): Promise<Types.GetList> {
     console.log(obj)
+    //this.apisauce.put(`/api/unknown/${id}?page=${obj.page}`)
     const response: ApiResponse<any> = await this.apisauce.put(`/api/unknown?page=${obj.page}`, {
       id: obj.id,
       name: obj.name,
