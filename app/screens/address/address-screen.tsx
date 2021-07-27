@@ -14,7 +14,7 @@ import { Dimensions } from "react-native"
 
 export const AddressScreen = observer(function AddressScreen() {
   // Pull in one of our MST stores
-  const { cartStore } = useStores()
+  const { cartStore, addressStore } = useStores()
   const navigation = useNavigation()
   const [latitude, setLatitude] = useState(37.4219316)
   const [longitude, setLongitude] = useState(-122.0840734)
@@ -127,6 +127,7 @@ Geocoder.from(41.89, 12.49)
       <View style={{ width: '100%', height: '100%' }}>
         <View style={{ backgroundColor: 'transparent', marginTop: 10 }}>
           <FlatList
+            showsHorizontalScrollIndicator={false}
             horizontal={true}
             data={markers}
             renderItem={({ item, index }) => (
@@ -169,6 +170,12 @@ Geocoder.from(41.89, 12.49)
         <View style={{ marginHorizontal: 10, bottom: 10 }}>
           <Button title='done' onPress={() => {
             cartStore.setLocation(initial.latitude, initial.longitude)
+            let obj = {
+              latitude: initial.latitude,
+              longitude: initial.longitude,
+              selected: false
+            }
+            addressStore.addaddress(obj)
             navigation.goBack()
           }} />
         </View>
