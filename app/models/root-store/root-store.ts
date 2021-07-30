@@ -3,6 +3,7 @@ import { AddressStoreModel } from "../address-store/address-store"
 import { ApiStoreModel } from "../api-store/api-store"
 import { CartStoreModel } from "../cart-store/cart-store"
 import { CharacterStoreModel } from "../character-store/character-store"
+import { CommentStoreModel } from "../comment-store/comment-store"
 import { ExtraStoreModel } from "../extra-store/extra-store"
 import { ShoppingStoreModel } from "../shopping-store/shopping-store"
 
@@ -16,7 +17,8 @@ export const RootStoreModel = types.model("RootStore").props({
   shoppingStore: types.optional(ShoppingStoreModel, {} as any),
   cartStore: types.optional(CartStoreModel, {} as any),
   extraStore: types.optional(ExtraStoreModel, {} as any),
-  addressStore: types.optional(AddressStoreModel, {} as any)
+  addressStore: types.optional(AddressStoreModel, {} as any),
+  commentStore: types.optional(CommentStoreModel, {} as any)
 })
 
 /**

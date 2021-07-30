@@ -7,7 +7,7 @@
 import React from "react"
 import { createDrawerNavigator } from "@react-navigation/drawer"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { FormScreen, ThirdScreen, SecondScreen, FirstScreen, HistoryScreen, HomeScreen, ItemScreen, ItemDetailScreen, CartScreen, FavouriteScreen, WelcomeScreen, OfferScreen, OfferDetailScreen, OrderScreen, AddressScreen, ConfirmScreen, SearchScreen, UserInfoScreen, VisitedScreen, SelectAddressScreen } from "../screens"
+import { FormScreen, ThirdScreen, SecondScreen, FirstScreen, HistoryScreen, HomeScreen, ItemScreen, ItemDetailScreen, CartScreen, FavouriteScreen, WelcomeScreen, OfferScreen, OfferDetailScreen, OrderScreen, AddressScreen, ConfirmScreen, SearchScreen, UserInfoScreen, VisitedScreen, SelectAddressScreen, FeedbackScreen } from "../screens"
 import { FlatList, View, Text, TouchableOpacity, Dimensions, Image, Switch } from "react-native"
 import { DrawerActions, useNavigation } from "@react-navigation/native"
 import { useStores } from "../models"
@@ -56,6 +56,7 @@ export type PrimaryParamList = {
   userinfo: undefined
   visit: undefined
   select: undefined
+  feedback: undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/Drawer-navigator/
@@ -135,6 +136,7 @@ export function MainNavigator() {
       <Drawer.Screen name='userinfo' component={UserInfoScreen} />
       <Drawer.Screen name='visit' component={VisitedScreen} />
       <Drawer.Screen name='select' component={SelectAddressScreen} />
+      <Drawer.Screen name='feedback' component={FeedbackScreen} />
     </Drawer.Navigator>
     ///  below is BOXING app navigator
     /*<Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>

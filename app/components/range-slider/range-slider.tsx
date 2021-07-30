@@ -14,14 +14,14 @@ export interface RangeSliderProps {
    * An optional style override useful for padding & margin.
    */
   style?: StyleProp<ViewStyle>
-  flag
-  onComplete
-  part
-  set_Part
-  start
-  end
-  set_start
-  set_end
+  flag: any
+  onComplete: any
+  part: any
+  set_Part: any
+  start: any
+  end: any
+  set_start: any
+  set_end: any
 }
 
 /**

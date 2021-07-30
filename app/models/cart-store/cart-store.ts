@@ -1,4 +1,5 @@
 import { getSnapshot, Instance, SnapshotOut, types } from "mobx-state-tree"
+import { multiply } from "ramda";
 import { Alert } from "react-native";
 
 /**
@@ -162,6 +163,16 @@ export const CartStoreModel = types
       self.location_latitude = lat;
       self.location_longitude = long;
       console.log('location selected')
+    },
+    gift() {
+      var count = 0
+      for (var i = 0; i < self.carts.length; i++) {
+        count = count + self.carts[i].quantity
+      }
+      var answer = multiply(count, 10)
+      var final = answer + self.amount;
+      self.amount = final;
+      console.log(';;;;;;;;;;;;;;;;;here: ' + self.amount)
     }
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
