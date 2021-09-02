@@ -1,15 +1,16 @@
-import React from "react"
+import React, { useRef } from "react"
 import { observer } from "mobx-react-lite"
-import { View, Text, FlatList, Image, TouchableOpacity } from "react-native"
+import { View, Text, FlatList, Image, TouchableOpacity, Animated } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../../models"
-import { Header, HeaderCommon } from "../../components"
+import { HeaderCommon } from "../../components"
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { HEIGHT, WIDTH } from "../../theme/scale"
-import Modal from 'react-native-modal';
-import { countBy, multiply } from "ramda"
 import { RadioButton } from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import BOTTOM from './bottom'
+
+
 export const CartScreen = observer(function CartScreen() {
   // Pull in one of our MST stores
   const { cartStore, shoppingStore } = useStores()
@@ -26,7 +27,10 @@ export const CartScreen = observer(function CartScreen() {
     //console.log(count)
     return count;
   }
-
+  const length = useRef(new Animated.Value(0)).current;
+  const HEADER_MAX_HEIGHT = HEIGHT(190);
+  const HEADER_MIN_HEIGHT = 80;
+  const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
   return (
     <View style={{ flex: 1, backgroundColor: shoppingStore.dark ? 'black' : '#fff' }}>
       <HeaderCommon
@@ -104,33 +108,70 @@ export const CartScreen = observer(function CartScreen() {
           </View>
         </Modal>
     </View> */}
-
-      <View style={{ borderBottomWidth: 1, borderBottomColor: '#d9d6c5', height: HEIGHT(190) }}>
-        <Text style={{ fontSize: 23, marginHorizontal: 20 }}>Cart subtotal ({countItems()} items) : Rs.{cartStore.amount}</Text>
-        <View style={{ flexDirection: 'row', marginLeft: 15, marginTop: 7 }}>
-          <RadioButton
-            value=''
-            color='green'
-            status={isgift ? 'checked' : 'unchecked'}
-            onPress={() => {
-              setIsgift(!isgift)
-              isgift ? cartStore.countAmount() : cartStore.gift()
-            }}
-          />
-          <FontAwesome5 name='gift' size={30} style={{ marginLeft: 10 }} />
-          <Text style={{ fontSize: 20, marginLeft: 5 }}>This order contains a gift</Text>
-        </View>
-        {isgift && <Text style={{ fontSize: 18, marginLeft: 15, color: 'green' }}>Added 10 rupees for gift in all Products</Text>}
-        <View style={{
+      <Animated.View
+        style={{
+          borderBottomWidth: 1, borderBottomColor: '#d9d6c5',
+          // height: HEIGHT(190)
+          height: length.interpolate({
+            inputRange: [0, HEADER_SCROLL_DISTANCE],
+            outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+            extrapolate: 'clamp',
+          }),
+        }}>
+        <Animated.View
+          style={{
+            opacity: length.interpolate({
+              inputRange: [0, HEADER_SCROLL_DISTANCE],
+              outputRange: [1, 0],
+              extrapolate: 'clamp',
+            }),
+          }}>
+          <Text style={{ fontSize: 23, marginHorizontal: 20 }}>Cart subtotal ({countItems()} items) : Rs.{cartStore.amount}</Text>
+          <View style={{ flexDirection: 'row', marginLeft: 15, marginTop: 7 }}>
+            <RadioButton
+              value=''
+              color='green'
+              status={isgift ? 'checked' : 'unchecked'}
+              onPress={() => {
+                setIsgift(!isgift)
+                isgift ? cartStore.countAmount() : cartStore.gift()
+              }}
+            />
+            <FontAwesome5 name='gift' size={30} style={{ marginLeft: 10 }} />
+            <Text style={{ fontSize: 20, marginLeft: 5 }}>This order contains a gift</Text>
+          </View>
+          {isgift && <Text style={{ fontSize: 18, marginLeft: 15, color: 'green' }}>Added 10 rupees for gift in all Products</Text>}
+        </Animated.View>
+        <Animated.View style={{
+          transform: [
+            {
+              translateY: length.interpolate({
+                inputRange: [0, HEADER_SCROLL_DISTANCE],
+                outputRange: [0, -105],
+                extrapolate: 'clamp',
+              }),
+            },
+          ],
           marginTop: isgift ? 18 : 38, width: WIDTH(360), height: 60, backgroundColor: '#f2c862', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', borderWidth: 1, borderRadius: 3
         }}>
           <TouchableOpacity onPress={() => navigation.navigate('userinfo')}>
             <Text style={{ fontSize: 20 }}>Proceed to checkout</Text>
           </TouchableOpacity>
-        </View>
-      </View>
-      <View>
+        </Animated.View>
+      </Animated.View>
+
+      <Animated.View style={{
+        height: length.interpolate({
+          inputRange: [0, HEADER_SCROLL_DISTANCE],
+          outputRange: [500, 600],
+          extrapolate: 'clamp',
+        }),
+      }}>
         <FlatList
+          scrollEventThrottle={16}
+          onScroll={Animated.event([
+            { nativeEvent: { contentOffset: { y: length } } },
+          ], { useNativeDriver: false })}
           data={cartStore.carts.toJSON()}
           renderItem={({ item, index }) => (
             <View style={{ height: 200, borderBottomWidth: 1, marginTop: 10, marginHorizontal: 5, justifyContent: 'center', borderBottomColor: '#d9d6c5' }}>
@@ -175,8 +216,9 @@ export const CartScreen = observer(function CartScreen() {
             </View>
           )}
           keyExtractor={index => index.toString()}
+          ListFooterComponent={<BOTTOM Data={cartStore.saved.toJSON()} />}
         />
-      </View>
+      </Animated.View>
     </View >
   )
 })

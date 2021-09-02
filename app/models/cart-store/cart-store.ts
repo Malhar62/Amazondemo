@@ -25,6 +25,7 @@ export const CartStoreModel = types
     location_latitude: types.optional(types.number, 0),
     location_longitude: types.optional(types.number, 0),
     visited: types.optional(types.array(types.frozen()), []),
+    saved: types.optional(types.array(types.frozen()), []),
   })
   .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
@@ -100,7 +101,8 @@ export const CartStoreModel = types
         price: data.item.price
       }
       self.carts.splice(data.index, 1, obj);
-      self.countAmount()
+      self.countAmount();
+      this.gift()
     },
     removeQuantity(data) {
       let obj = {
@@ -115,8 +117,10 @@ export const CartStoreModel = types
       }
       self.carts.splice(data.index, 1, obj);
       self.countAmount()
+      this.gift()
+
     },
-    moveToCart(data) {
+    moveToCart(data: any) {
       var count = 0;
       for (var i = 0; i < self.carts.length; i++) {
         if (data.item.title != self.carts[i].title) {
@@ -135,18 +139,17 @@ export const CartStoreModel = types
     emptyCart() {
       self.favs = []
     },
-    saveForLater(data) {
-
+    saveForLater(data: any) {
       var count = 0;
-      for (var i = 0; i < self.favs.length; i++) {
-        if (data.title != self.favs[i].title) {
+      for (var i = 0; i < self.saved.length; i++) {
+        if (data.title != self.saved[i].title) {
           count++;
         }
       }
-      if (count == self.favs.length) {
-        let array = [...self.favs]
+      if (count == self.saved.length) {
+        let array = [...self.saved]
         array.push({ ...data })
-        self.favs = [...array];
+        self.saved = [...array];
       }
       var Index = self.carts.findIndex(x => x.title === data.title);
       let furray = [...self.carts]
@@ -172,7 +175,26 @@ export const CartStoreModel = types
       var answer = multiply(count, 10)
       var final = answer + self.amount;
       self.amount = final;
-      console.log(';;;;;;;;;;;;;;;;;here: ' + self.amount)
+      // console.log(';;;;;;;;;;;;;;;;;here: ' + self.amount)
+    },
+    deleteFromSaved(index: any) {
+      self.saved.splice(index, 1)
+    },
+    moveToCartFromSaved(data: any) {
+      var count = 0;
+      for (var i = 0; i < self.carts.length; i++) {
+        if (data.item.title != self.carts[i].title) {
+          count++;
+        }
+      }
+      if (count == self.carts.length) {
+        self.carts.push(data.item)
+        self.countAmount()
+        self.saved.splice(data.index, 1)
+        Alert.alert('Moved to Cart !')
+      } else {
+        self.saved.splice(data.index, 1)
+      }
     }
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 

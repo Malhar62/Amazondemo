@@ -12,7 +12,13 @@ export interface GetList1 {
   name: string,
   pantone_value: number
 }
-
+export interface Data {
+  id: number,
+  first_name: string,
+  last_name: string,
+  email: string,
+  avatar: string
+}
 
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem
@@ -23,4 +29,4 @@ export type GetCharacterResult = { kind: "ok"; character: Character } | GeneralA
 export type GetList = { kind: 'ok', list: GetList1, status: number } | GeneralApiProblem
 
 export type GetBoxer = { kind: 'ok', list: any, status: number } | GeneralApiProblem
-export type GetShoppingData = { kind: 'ok', list: any, status: number } | GeneralApiProblem
+export type GetShoppingData = { kind: 'ok', list: Data, status: number } | GeneralApiProblem

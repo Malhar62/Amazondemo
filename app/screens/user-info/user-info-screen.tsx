@@ -137,8 +137,8 @@ export const UserInfoScreen = observer(function UserInfoScreen() {
           </View>
         </View>
         <View style={{ alignItems: 'center', marginVertical: 10 }}>
-          <TouchableOpacity onPress={() => navigation.navigate('confirm')}
-            style={{ width: 350, height: 60, backgroundColor: 'gold', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => navigation.navigate('confirm1')}
+            style={{ width: 350, height: 60, backgroundColor: '#f2c862', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ fontSize: 17 }}>Deliver to this address</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{ marginVertical: 10, width: 350, height: 50, borderRadius: 5, backgroundColor: '#f1f1f1', justifyContent: 'center', alignItems: 'center' }}>

@@ -1,5 +1,6 @@
-import { getSnapshot, Instance, SnapshotOut, types } from "mobx-state-tree"
-
+import { Instance, SnapshotOut, types } from "mobx-state-tree"
+import React, { useRef } from 'react';
+import { Animated } from "react-native";
 /**
  * Model description here for TypeScript hints.
  */
@@ -14,19 +15,21 @@ const CommentData = types.model({
   title: types.maybe(types.string),
   list: types.maybe(types.array(comment))
 })
-const Rate = types.model({
-  title: types.maybe(types.string),
-  value: types.maybe(types.number),
-})
 export const CommentStoreModel = types
   .model("CommentStore")
   .props({
     comments: types.optional(types.array(comment), []),
     commentarray: types.optional(types.array(CommentData), [{ title: 'Malhar', list: [{ text: 'king', time: '2PM' }] }]),
-    ratings: types.optional(types.array(Rate), [])
+    ratings: types.optional(types.array(types.frozen()), []),
+    longines: types.optional(types.frozen(types.number), 0)
   })
   .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
+
+    adding(data) {
+      self.longines = data
+      console.log(data)
+    },
     postComment(data: any) {
       //self.comments.push(data)
       // var count = 0
@@ -63,9 +66,19 @@ export const CommentStoreModel = types
     },
     giveRating(data: any) {
       var count = 0;
-      let obj = { title: data.title, value: data.value }
+      let obj = {
+        id: data.OBJ.id,
+        title: data.OBJ.title,
+        category: data.OBJ.category,
+        description: data.OBJ.description,
+        price: data.OBJ.price,
+        image: data.OBJ.image,
+        quantity: 1,
+        isfav: false,
+        value: data.value
+      }
       for (var i = 0; i < self.ratings.length; i++) {
-        if (data.title == self.ratings[i].title) {
+        if (data.OBJ.title == self.ratings[i].title) {
           self.ratings.splice(i, 1, obj)
         } else {
           count++;

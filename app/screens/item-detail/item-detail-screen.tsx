@@ -7,7 +7,6 @@ import { BottomView, HeaderCommon } from "../../components"
 import { typography } from "../../theme"
 import { HEIGHT, WIDTH } from "../../theme/scale"
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { useState } from "react"
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from "moment"
@@ -27,57 +26,7 @@ export const ItemDetailScreen = observer(function ItemDetailScreen() {
   const TEXT1: TextStyle = {
     fontSize: 25, fontFamily: typography.code, color: shoppingStore.dark ? '#fff' : 'black', marginLeft: 5
   }
-  function checkingColor() {
-    var count = 0;
-    for (var i = 0; i < cartStore.carts.length; i++) {
-      if (route.params.user.title != cartStore.carts[i].title) {
-        count++;
-      }
-    }
-    if (count == cartStore.carts.length) {
-      return '#7297ad'
-    } else {
-      return '#f1f1f1'
-    }
-  }
-  function addFav() {
-    var count = 0;
-    for (var i = 0; i < cartStore.carts.length; i++) {
-      if (route.params.user.title != cartStore.carts[i].title) {
-        count++;
-      }
-    }
-    if (count == cartStore.carts.length) {
-      var valve = logo('name')
-      if (valve == 'star-o') {
-        let obj = {
-          id: route.params.user.id,
-          price: route.params.user.price,
-          title: route.params.user.title,
-          description: route.params.user.description,
-          category: route.params.user.category,
-          image: route.params.user.image,
-          quantity: 1,
-          isfav: false
-        }
-        var count = 0;
-        for (var i = 0; i < cartStore.favs.length; i++) {
-          if (route.params.user.title != cartStore.favs[i].title) {
-            count++;
-          }
-        }
-        if (count == cartStore.favs.length) {
-          cartStore.addToFav(obj)
-        }
-      } else {
-        var Index = cartStore.favs.findIndex(x => x.title === route.params.user.title);
-        cartStore.removeFav(Index)
-      }
-    } else {
-      Alert.alert('Already in Cart !')
-    }
-  }
-  function logo(value) {
+  function logo(value: any) {
     var count = 0;
     for (var i = 0; i < cartStore.favs.length; i++) {
       if (route.params.user.title != cartStore.favs[i].title) {
@@ -99,8 +48,6 @@ export const ItemDetailScreen = observer(function ItemDetailScreen() {
     }
   }
   cartStore.addVisited(route.params.user)
-  const scroll = React.createRef<FlatList>();
-  const scroll1 = React.createRef<FlatList>();
   const scrollRef = useRef<ScrollView>();
 
   useEffect(() => {
@@ -129,6 +76,57 @@ export const ItemDetailScreen = observer(function ItemDetailScreen() {
     setList(array.slice(0, 6))
   }
   function TOP() {
+
+    function checkingColor() {
+      var count = 0;
+      for (var i = 0; i < cartStore.carts.length; i++) {
+        if (route.params.user.title != cartStore.carts[i].title) {
+          count++;
+        }
+      }
+      if (count == cartStore.carts.length) {
+        return '#7297ad'
+      } else {
+        return '#f1f1f1'
+      }
+    }
+    function addFav() {
+      var count = 0;
+      for (var i = 0; i < cartStore.carts.length; i++) {
+        if (route.params.user.title != cartStore.carts[i].title) {
+          count++;
+        }
+      }
+      if (count == cartStore.carts.length) {
+        var valve = logo('name')
+        if (valve == 'star-o') {
+          let obj = {
+            id: route.params.user.id,
+            price: route.params.user.price,
+            title: route.params.user.title,
+            description: route.params.user.description,
+            category: route.params.user.category,
+            image: route.params.user.image,
+            quantity: 1,
+            isfav: false
+          }
+          var count = 0;
+          for (var i = 0; i < cartStore.favs.length; i++) {
+            if (route.params.user.title != cartStore.favs[i].title) {
+              count++;
+            }
+          }
+          if (count == cartStore.favs.length) {
+            cartStore.addToFav(obj)
+          }
+        } else {
+          var Index = cartStore.favs.findIndex(x => x.title === route.params.user.title);
+          cartStore.removeFav(Index)
+        }
+      } else {
+        Alert.alert('Already in Cart !')
+      }
+    }
     return (
       <View style={{}}>
         <Text style={[TEXT1, { fontSize: 20 }]}>{route.params.user.title}</Text>
@@ -156,7 +154,19 @@ export const ItemDetailScreen = observer(function ItemDetailScreen() {
         <Text style={TEXT}>About Product :</Text>
         <Text style={[TEXT1, { fontSize: 20 }]}>{route.params.user.description}</Text>
         <View style={{ marginLeft: 10, marginTop: 10 }}>
-          <TouchableOpacity onPress={() => navigation.navigate('feedback', { title: route.params.user.title })}>
+          <TouchableOpacity onPress={() => {
+            let OBJ = {
+              id: route.params.user.id,
+              title: route.params.user.title,
+              category: route.params.user.category,
+              description: route.params.user.description,
+              price: route.params.user.price,
+              image: route.params.user.image,
+              quantity: 1,
+              isfav: false
+            }
+            navigation.navigate('feedback', { user: OBJ })
+          }}>
             <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Post Your Feedback</Text>
           </TouchableOpacity>
         </View>
@@ -221,7 +231,21 @@ export const ItemDetailScreen = observer(function ItemDetailScreen() {
 
               }}>
                 {(item.title == route.params.user.title) &&
-                  <TouchableOpacity onPress={() => navigation.navigate('feedback', { title: route.params.user.title })}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      let OBJ = {
+                        id: route.params.user.id,
+                        title: route.params.user.title,
+                        category: route.params.user.category,
+                        description: route.params.user.description,
+                        price: route.params.user.price,
+                        image: route.params.user.image,
+                        quantity: 1,
+                        isfav: false
+                      }
+                      navigation.navigate('feedback', { user: OBJ })
+                    }}
+                  >
                     <View style={{ marginTop: 10 }}>
                       <Text numberOfLines={1} style={{ fontSize: 20, marginLeft: 5 }}>{item.text}</Text>
                       <Text style={{ fontSize: 15, color: 'grey', marginLeft: 5 }}>{item.time}</Text>

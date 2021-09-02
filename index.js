@@ -9,6 +9,9 @@
 // It's easier just to leave it here.
 import App from "./app/app.tsx"
 import { AppRegistry } from "react-native"
+if (__DEV__) {
+    import('./app/services/reactotron').then(() => console.log('Reactotron Configured'))
+}
 
 AppRegistry.registerComponent("RealIgnite", () => App)
 export default App

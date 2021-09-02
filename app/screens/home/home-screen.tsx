@@ -51,8 +51,8 @@ export const HomeScreen = observer(function HomeScreen() {
             inactiveDotColor="#90A4AE"
           />
         </View>
-        <View>
-          <Text style={{ fontSize: 20, fontFamily: typography.code, alignSelf: 'center', color: shoppingStore.dark ? '#fff' : 'black' }} >- Recently Viewed -</Text>
+        <View style={{ marginTop: 20, backgroundColor: shoppingStore.dark ? '#fff' : 'maroon', height: 40, justifyContent: 'center', marginHorizontal: 30 }}>
+          <Text style={{ fontSize: 20, fontFamily: typography.code, alignSelf: 'center', color: shoppingStore.dark ? 'black' : '#fff' }} > Recently Viewed </Text>
         </View>
       </View>
     )

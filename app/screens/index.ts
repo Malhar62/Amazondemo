@@ -23,3 +23,4 @@ export * from "./user-info/user-info-screen"
 export * from "./visited/visited-screen"
 export * from "./select-address/select-address-screen"
 export * from "./feedback/feedback-screen"
+export * from './ChatScreens/chatdetail'

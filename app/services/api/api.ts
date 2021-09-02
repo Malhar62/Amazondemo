@@ -229,4 +229,18 @@ export class Api {
       return { kind: "bad-data" }
     }
   }
+
+  async getChatLists(): Promise<Types.GetShoppingData> {
+    const response: ApiResponse<any> = await this.apisauce.get('https://reqres.in/api/users?page=1')
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    try {
+      return { kind: "ok", list: response.data, status: response.status }//returns this
+    } catch {
+      return { kind: "bad-data" }
+    }
+  }
+
 }

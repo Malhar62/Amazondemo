@@ -1,8 +1,8 @@
 import React from "react"
 import { observer } from "mobx-react-lite"
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native"
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from "react-native"
 import { HeaderCommon } from "../../components"
-import { useNavigation, useRoute } from "@react-navigation/native"
+import { useNavigation, useRoute, useIsFocused } from "@react-navigation/native"
 import { useStores } from "../../models"
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 export const FeedbackScreen = observer(function FeedbackScreen() {
@@ -11,19 +11,33 @@ export const FeedbackScreen = observer(function FeedbackScreen() {
   const route = useRoute<any>()
   // Pull in navigation via hook
   const navigation = useNavigation()
+  const isFocused = useIsFocused()
   let array = ['1', '2', '3', '4', '5']
-  const [num, setNum] = React.useState<number>()
-  const [load, setLoad] = React.useState<boolean>(true)
+  const [num, setNum] = React.useState<number>(0)
+  const [load, setLoad] = React.useState<boolean>()
   const [flag, setFlag] = React.useState<boolean>(false)
-
+  let OBJ = {
+    id: route.params.user.id,
+    title: route.params.user.title,
+    category: route.params.user.category,
+    description: route.params.user.description,
+    price: route.params.user.price,
+    image: route.params.user.image,
+    quantity: 1,
+    isfav: false
+  }
+  console.log(OBJ)
   React.useEffect(() => {
-    finding()
-  })
+    if (isFocused) {
+      setLoad(true)
+      finding()
+      //setLoad(false)
+    }
+  }, [isFocused])
   function finding() {
-    setLoad(true)
     var count = 0;
     for (var i = 0; i < commentStore.ratings.length; i++) {
-      if (commentStore.ratings[i].title == route.params.title) {
+      if (commentStore.ratings[i].title == route.params.user.title) {
         setNum(commentStore.ratings[i].value)
       } else {
         count++;
@@ -61,7 +75,7 @@ export const FeedbackScreen = observer(function FeedbackScreen() {
                 renderItem={({ item, index }) => (
                   <View style={{ margin: 10 }}>
                     <FontAwesome name={(index + 1) > num ? 'star-o' : 'star'} color={(index + 1) > num ? 'black' : 'gold'} size={30} onPress={() => {
-                      let obj = { title: route.params.title, value: (index + 1), flag: false }
+                      let obj = { OBJ, value: (index + 1) }
                       commentStore.giveRating(obj)
                       finding()
                     }} />
@@ -88,11 +102,17 @@ export const FeedbackScreen = observer(function FeedbackScreen() {
           data={commentStore.comments.toJSON()}
           renderItem={({ item, index }) => (
             <View>
-              {(item.title == route.params.title) &&
-                <TouchableOpacity onLongPress={() => {
-                  setFlag(true)
-                  commentStore.editComment(index)
-                }}>
+              {(item.title == route.params.user.title) &&
+                <TouchableWithoutFeedback
+                  onLongPress={() => {
+                    setFlag(true)
+                    commentStore.editComment(index)
+                  }}
+                  onPress={() => {
+                    setFlag(false)
+                    commentStore.setAsItIs()
+                  }}
+                >
 
                   <View
                     style={{
@@ -112,11 +132,11 @@ export const FeedbackScreen = observer(function FeedbackScreen() {
 
                     <View style={styles.rightArrowOverlap}></View>
                   </View>
-                </TouchableOpacity>
+                </TouchableWithoutFeedback>
               }
             </View>
             // <View >
-            //   {(item.title == route.params.title) &&
+            //   {(item.title == route.params.user.title) &&
             //     <View style={{ flexDirection: 'row', width: '100%', borderBottomWidth: 1, borderBottomColor: 'grey' }}>
             //       <View>
             //         <Text style={{ fontSize: 25, marginLeft: 5 }}>{item.text}</Text>

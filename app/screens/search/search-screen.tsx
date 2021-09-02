@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { observer } from "mobx-react-lite"
-import { View, Text, FlatList, TouchableOpacity, TextInput } from "react-native"
+import { View, Text, FlatList, TouchableOpacity, TextInput, Keyboard } from "react-native"
 import { useNavigation, useIsFocused } from "@react-navigation/native"
 import { useStores } from "../../models"
 import { Header, HeaderCommon } from "../../components"
@@ -94,6 +94,7 @@ export const SearchScreen = observer(function SearchScreen() {
             <View style={{ width: '100%', marginTop: 5, borderBottomWidth: 1, borderBottomColor: 'grey', flexDirection: 'row' }}>
               <View style={{ width: WIDTH(340) }}>
                 <TouchableOpacity onPress={() => {
+                  Keyboard.dismiss()
                   navigation.navigate('itemlist', { name: item.category });
                   shoppingStore.addSearch(item)
                   shoppingStore.deleteSearch()

@@ -71,7 +71,7 @@ export const ShoppingStoreModel = types
     sortDown() {
       self.items.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
     },
-    sortRange(min, max) {
+    sortRange(min: number, max: number) {
 
       var arr = [...self.items]
       var res = arr.filter(function (o) {

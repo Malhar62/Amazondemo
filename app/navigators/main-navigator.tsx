@@ -13,7 +13,10 @@ import { DrawerActions, useNavigation } from "@react-navigation/native"
 import { useStores } from "../models"
 import { useEffect } from "react"
 import { createStackNavigator } from "@react-navigation/stack"
-
+import { AddCard } from "../screens/confirm/AddCard"
+import Rated from "../screens/item/Rated"
+import { HEIGHT, WIDTH } from '../theme/scale'
+import Main from "../screens/ChatScreens/main"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -26,7 +29,6 @@ import { createStackNavigator } from "@react-navigation/stack"
  *   https://reactnavigation.org/docs/params/
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  */
-const WIDTH = Dimensions.get('window').width;
 //const HEIGHT = Dimensions.get('window').height;
 
 export type PrimaryParamList = {
@@ -52,11 +54,15 @@ export type PrimaryParamList = {
   order: undefined
   address: undefined
   search: undefined
+  confirm1: undefined
   confirm: undefined
   userinfo: undefined
   visit: undefined
   select: undefined
+  addcard: undefined
   feedback: undefined
+  rated: undefined
+  chat: undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/Drawer-navigator/
@@ -72,10 +78,16 @@ export function MainNavigator() {
     { name: 'TOP OFFERS', path: 'offer' },
     { name: 'YOUR CART', path: 'cart' },
     { name: 'YOUR ORDERS', path: 'order' },
+    { name: 'TOP RATED', path: 'rated' },
     { name: 'MY FAVOURITES', path: 'favourite' },
+    { name: 'MESSAGES', path: 'chat' }
   ]
   function ShoppingDrawer() {
+    useEffect(() => {
+      shoppingStore.getShop()
+    })
     const [isEnabled, setIsEnabled] = React.useState(shoppingStore.dark);
+    const [more, setMore] = React.useState<boolean>()
     const toggleSwitch = () => {
       setIsEnabled(previousState => !previousState);
       shoppingStore.setTheme(!isEnabled)
@@ -90,11 +102,32 @@ export function MainNavigator() {
         <FlatList
           data={DATA}
           renderItem={({ item, index }) => (
-            <View style={{ width: 278, height: 60, justifyContent: 'center', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#f1f1f1' }}>
-              <View style={{ flexDirection: 'row' }}>
-                <TouchableOpacity onPress={() => navigation.navigate(item.path)}>
+            <View style={{ width: WIDTH(278), height: (item.name == 'TOP RATED' && more) ? 180 : 60, alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#f1f1f1', justifyContent: 'center' }}>
+              <View style={{ flexDirection: (item.name == 'TOP RATED' && more) ? 'column' : 'row' }}>
+                <TouchableOpacity onPress={() => {
+                  if (item.name == 'TOP RATED') {
+                    setMore(!more)
+                  } else {
+                    navigation.navigate(item.path)
+                  }
+                }}>
                   <Text style={{ fontSize: 20, alignSelf: 'center' }}>{item.name}</Text>
                 </TouchableOpacity>
+                {more && item.name == 'TOP RATED' &&
+                  <View style={{ height: 100, width: 200 }}>
+                    <FlatList
+                      data={shoppingStore.categories}
+                      renderItem={({ item, index }) => (
+                        <View style={{ alignSelf: 'center', marginTop: 7 }}>
+                          <TouchableOpacity onPress={() => navigation.navigate('rated', { NAME: item })}>
+                            <Text style={{ fontSize: 18, borderBottomWidth: 1, borderBottomColor: '#f1f1f1' }}>{item}</Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+                      keyExtractor={item => item}
+                    />
+                  </View>
+                }
                 <View style={{ width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 15, backgroundColor: item.path == 'favourite' ? 'pink' : (item.path == 'cart' ? 'pink' : '#fff') }}>
                   <Text style={{ fontSize: 20 }}>{item.path == 'favourite' ? cartStore.favs.length : (item.path == 'cart' ? cartStore.carts.length : '')}</Text>
                 </View>
@@ -131,12 +164,14 @@ export function MainNavigator() {
       <Drawer.Screen name='offerdetail' component={OfferDetailScreen} />
       <Drawer.Screen name='order' component={OrderScreen} />
       <Drawer.Screen name='address' component={AddressScreen} />
-      <Drawer.Screen name='confirm' component={ConfirmScreen} />
+      <Drawer.Screen name='confirm1' component={Confirm} />
       <Drawer.Screen name='search' component={SearchScreen} />
       <Drawer.Screen name='userinfo' component={UserInfoScreen} />
       <Drawer.Screen name='visit' component={VisitedScreen} />
       <Drawer.Screen name='select' component={SelectAddressScreen} />
       <Drawer.Screen name='feedback' component={FeedbackScreen} />
+      <Drawer.Screen name='rated' component={Rated} />
+      <Drawer.Screen name='chat' component={Main} />
     </Drawer.Navigator>
     ///  below is BOXING app navigator
     /*<Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
@@ -145,7 +180,16 @@ export function MainNavigator() {
     </Tab.Navigator>*/
   )
 }
-
+function Confirm() {
+  return (
+    <Stack.Navigator screenOptions={{
+      headerShown: false,
+    }}>
+      <Stack.Screen name='confirm' component={ConfirmScreen} />
+      <Stack.Screen name='addcard' component={AddCard} />
+    </Stack.Navigator>
+  )
+}
 function MyTabBar({ state, navigation }) {
   const { index, routes } = navigation.dangerouslyGetState();
   const currentRoute = routes[index].name;
@@ -195,7 +239,7 @@ function MyTabBar({ state, navigation }) {
                   <View
                     style={{
                       height: 50,
-                      width: WIDTH / 2,
+                      width: '50%',
                       marginTop: currentRoute == route.name ? 0 : 40,
                       backgroundColor: currentRoute == route.name ? 'red' : 'yellow',
                       alignItems: 'center',
