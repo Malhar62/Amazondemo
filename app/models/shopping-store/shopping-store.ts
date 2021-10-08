@@ -74,12 +74,12 @@ export const ShoppingStoreModel = types
     sortRange(min: number, max: number) {
 
       var arr = [...self.items]
-      var res = arr.filter(function (o) {
+      var res: any = arr.filter(function (o) {
         // check value is within the range
         // remove `=` if you don't want to include the range boundary
         return o.price <= max && o.price >= min;
       });
-      self.items = [...res]
+      self.items = res
       // console.log(extra)
       //filter(user => lowerLimit <= user.timeStamp && user.timeStamp <= upperLimit);
     },

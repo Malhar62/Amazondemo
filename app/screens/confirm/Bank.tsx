@@ -103,7 +103,6 @@ export const Bank = ({ flag, backing }) => {
         // </View >
         <View>
             <RBSheet
-
                 ref={refRBSheet}
                 closeOnPressMask={false}
                 closeOnDragDown={true}

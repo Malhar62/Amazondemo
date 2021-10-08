@@ -265,7 +265,7 @@ function DashBoardScreen() {
     characterStore.getData(0)
   }, [])
   function CustomDrawerContent() {
-
+    //npm install @react-navigation/bottom-tabs@^5.11.11
     return (
       <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
         <View style={{ height: 200 }}>
